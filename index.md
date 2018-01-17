@@ -1,37 +1,89 @@
-## Welcome to GitHub Pages
+<!DOCTYPE html>
+<html>
 
-You can use the [editor on GitHub](https://github.com/rabbitpai/botu/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			#mycanvas {
+				border: 1px solid red;
+			}
+		</style>
+	</head>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+	<body>
+		<canvas id="mycanvas" width="500" height="500">
+			
+		</canvas>
+	</body>
+	<script type="text/javascript">
+		var rand = (min, max) => parseInt(Math.random() * (max - min) + min);
 
-### Markdown
+		var myCanvas = document.querySelector("#mycanvas");
+		var ctx = myCanvas.getContext("2d");
+		const canvasWidth = myCanvas.width;
+		const canvasHeight = myCanvas.height;
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+		class Ball {
+			constructor(ctx, canvasWidth, canvasHeight) {
+				this.ctx = ctx;
+				this.color = `rgb(${rand(1,256)},${rand(1,256)},${rand(1,256)})`;
 
-```markdown
-Syntax highlighted code block
+				var r = rand(2, 30);
+				this.r = r;
 
-# Header 1
-## Header 2
-### Header 3
+				this.x = rand(r, canvasWidth - r);
+				this.y = rand(r, canvasHeight - r);
 
-- Bulleted
-- List
+				this.maxWidth = canvasWidth - r;
+				this.maxHeight = canvasHeight - r;
 
-1. Numbered
-2. List
+				var speedx = rand(2, 6);
+				this.speedx = rand(0, 2) > 0 ? speedx : -speedx;
+				var speedy = rand(2, 6);
+				this.speedy = rand(0, 2) > 0 ? speedy : -speedy;
+			}
+			draw() {
+				this.ctx.beginPath();
+				this.ctx.fillStyle = this.color;
+				this.ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+				this.ctx.closePath();
+				this.ctx.fill();
+			}
+			move() {
+				this.x += this.speedx;
+				if(this.x >= this.maxWidth) {
+						this.speedx*=-1;
+						
+				}else if(this.x < this.r){
+					this.speedx*=-1;
+				}
+				
+				this.y += this.speedy;
+				if(this.y >= this.maxHeight) {
+						this.speedy*=-1;
+						
+				}else if(this.y < this.r){
+					this.speedy*=-1;
+				}
+				
+			}
+		}
+		var balls = [];
+		for(var i = 0; i < 555; i++) {
+			var ballnum = new Ball(ctx, canvasWidth, canvasHeight);
+			balls.push(ballnum);
+		}
+		
+		setInterval(function(){
+			ctx.clearRect(0,0,canvasWidth,canvasHeight);
+			
+			for(var i = 0; i < balls.length; i++) {
+			balls[i].draw();
+			balls[i].move();
+		}
+		},30);
+		
+	</script>
 
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rabbitpai/botu/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+</html>
